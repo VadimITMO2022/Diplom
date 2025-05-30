@@ -24,7 +24,7 @@ sidebar = dbc.Nav(
 app.layout = dbc.Container([
  
     dbc.Row([
-            html.H1("Недвижимость в Санктъ-Петербурге", className="header-title"),
+            html.H1("Недвижимость в Санкт-Петербурге", className="header-title"),
             html.H2("Квартиры на продажу", className="header-description")
         ], className="header"
         ),
