@@ -31,7 +31,7 @@ layout=html.Div([
 
 # Заголовок
   dbc.Row([
-           html.H5("Квартиры на карте города", className="header-2-title"),
+           html.H5("Квартиры на карте города СПб", className="header-2-title"),
         ], className="header-2"
         ),
 
