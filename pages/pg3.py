@@ -14,16 +14,17 @@ import dash
 from dash import dcc, html, callback, Output, Input
 import dash_bootstrap_components as dbc
 
-dash.register_page(__name__, path='/page-3', name='Стоимость квартиры')
+dash.register_page(__name__, path='/page-3', name='Продавцам')
 
 
-ml = pd.read_csv('data/data.csv')
+# ml = pd.read_csv('data/data.csv')
 df = pd.read_csv('data/data.csv')
-
+ml=df.copy()
+#print("shape = ",ml.shape)
 # преобразуем датасет ml
 ml=ml.dropna()
 #ml1 = ml.copy()
-
+#print("shape = ",ml.shape)
 
 # функции для замены строковой переменной на число
 
@@ -54,9 +55,22 @@ def type_to_index(x): # функция для замены названия ти
 
 # преобразуем датасет ml
 #ml=ml.dropna()
+ml['Срок сдачи']=ml['Срок сдачи'].astype(int)
 ml=ml[(ml['Срок сдачи']>2020) & (ml['Срок сдачи']<2030)]
-ml=ml[(ml['До метро']<5) & (ml['До центра']<24)]
-ml=ml[(ml['Площадь'] > 9.99) & (ml['Площадь']<63)]
+#print("shape = ",ml.shape)
+ml = ml[(ml['Этаж']>0) & (ml['Этаж']<18)]
+#print("shape = ",ml.shape)
+ml=ml[ml['До центра']<24]
+#print("shape = ",ml.shape)
+ml=ml[ml['До метро']<5]
+#print("shape = ",ml.shape)
+#ml=ml[(ml['До метро']<5) & (ml['До центра']<24)]
+#ml=ml[ml['До метро']<5]
+ml = ml[(ml['Цена (млн руб)'] > 1.2) & (ml['Цена (млн руб)']<22)]
+#print("shape = ",ml.shape)
+ml=ml[(ml['Площадь'] > 9.99) & (ml['Площадь']<60)]
+#print("shape = ",ml.shape)
+#print(ml.describe())
 
 # ml1 копия датафрейма ml
 ml1 = ml.copy()
@@ -66,15 +80,21 @@ ml['Количество комнат_int']=ml['Количество комна�
 ml['Метро_int']=ml['Метро'].apply(lambda x:  metro_to_index(x))
 ml['Вид объекта_int']=ml['Вид объекта'].apply(lambda x:  type_to_index(x))
 
-# удаляем колонки с данными, которые не влияют на образование цены квартиры
+#print(np.sort(ml['Количество комнат_int'].unique()))
+#print(np.sort(ml['Метро_int'].unique()))
+#print(np.sort(ml['Вид объекта_int'].unique()))
+
+# удаляем колонки с данными, которые не влияют на образование цены квартиры или коррелируют с данными других колонок
 ml= ml.drop(['Адрес','lat','lng'], axis=1)
-# Удаляем колонки, данные которых коррелируют с данными других колонок
-ml= ml.drop(['Этажей в доме'], axis=1)
+#print("shape = ",ml.shape)
+ml= ml.drop(['Этаж','Этажей в доме', 'До центра'], axis=1)
+#print("shape = ",ml.shape)
 
 # удаляем также колонки со строковыми данными (их роль играют колонки с числами)
 ml= ml.drop(['Количество комнат','Метро','Вид объекта'], axis=1)
+#print("shape = ",ml.shape)
 
-
+#print(df.describe())
 
 
 layout = html.Div([
@@ -159,30 +179,8 @@ dbc.Row([
                       )
                 ], md=6),
 
-       dbc.Col([html.Label("Расстояние до центра (км)", className="filter-label"),
-# Фильтр Слайдер "Выбрать расстояние до центра города (в км)"                     
-          dcc.Slider(id="distance-center-ml-filter",
-                      min=0,
-                      max=10,
-                      marks={i: '{}'.format(i) for i in range(0,24,1)},
-                      value=5,
-                      )
-                    ], md=6),
 
-          ]),
-
-  dbc.Row([             
-      dbc.Col([html.Label("Этаж", className="filter-label"), 
-# Выпадающее меню "Этаж"            
-          dcc.Dropdown(id="floor-ml-filter",
-                       options=[{'label': sx, 'value': sx } for sx in ml1.sort_values(by='Этаж', ascending=True)['Этаж'].unique() if pd.notna(sx)],    
-                        value=2,
-                        multi=False,   
-                        className="filter-dropdown", 
-                        )
-              ], md=6),
-
-       dbc.Col([html.Label("Площадь (кв м)", className="filter-label"),  
+      dbc.Col([html.Label("Площадь (кв м)", className="filter-label"),  
 # Фильтр Слайдер "Выбрать площадь квартиры (кв м)"             
            dcc.Slider(id="area-ml-filter",
                       min=10,
@@ -191,7 +189,33 @@ dbc.Row([
                       value=40,
                       )
                 ], md=6),
-         ]),
+
+          ]),
+
+#'''
+#  dbc.Row([             
+#      dbc.Col([html.Label("Этаж", className="filter-label"), 
+# Выпадающее меню "Этаж"            
+#          dcc.Dropdown(id="floor-ml-filter",
+#                       options=[{'label': sx, 'value': sx } for sx in ml1.sort_values(by='Этаж', ascending=True)['Этаж'].unique() if pd.notna(sx)],    
+#                        value=2,
+#                        multi=False,   
+#                        className="filter-dropdown", 
+#                        )
+#              ], md=6),
+
+              
+#       dbc.Col([html.Label("Расстояние до центра (км)", className="filter-label"),
+# Фильтр Слайдер "Выбрать расстояние до центра города (в км)"                     
+#          dcc.Slider(id="distance-center-ml-filter",
+#                      min=0,
+#                      max=10,
+#                      marks={i: '{}'.format(i) for i in range(0,24,1)},
+#                      value=5,
+#                      )
+#                    ], md=6),  
+#         ]),
+#'''
 
 
 #информационная панель
@@ -216,14 +240,15 @@ pio.templates.default = "custom"
     Input("distance-metro-ml-filter", "value"),
     Input("type-ml-filter", "value"),
     Input("year-ml-filter", "value"),
-    Input("floor-ml-filter", "value"),
+#    Input("floor-ml-filter", "value"),
     Input("area-ml-filter", "value"),
-    Input("distance-center-ml-filter","value"),
+#    Input("distance-center-ml-filter","value"),
     Input("number-rooms-ml-filter","value"),
 #    Input("my_input","value")
  )
 
-def update_graphs(district, distance, type, year, floor, area, center,room):
+#def update_graphs(district, distance, type, year, floor, area, center,room):
+def update_graphs(district, distance, type, year, area, room):
 
 
        X = ml.drop("Цена (млн руб)", axis=1) # наблюдения по признакам
@@ -233,8 +258,9 @@ def update_graphs(district, distance, type, year, floor, area, center,room):
 # выборка X_test1 нужна для последующего нахождения результата согласно данным, введенным пользователем
        X_train1, X_test1, y_train1, y_test1 = train_test_split(X, y, test_size=0.2, random_state=3) # разбиение на выборки тестовую и трейновую
 
-       print("X_test1")
-       print(X_test1)
+     #  print("X_test1")
+     #  print(X_test1)
+       print(ml.describe())
 
        scaler = StandardScaler() # нормализация (приводим к единому масштабу значения)
        X = scaler.fit_transform(X)
@@ -288,10 +314,10 @@ def update_graphs(district, distance, type, year, floor, area, center,room):
        
        example = {
                 'Срок сдачи': [int(year)],
-                'Этаж': [int(floor)],
+#                'Этаж': [int(floor)],
                 'Площадь': [float(area)],
                 'До метро': [float(distance)],
-                'До центра': [float(center)],
+#                'До центра': [float(center)],
                 'Количество комнат_int': room_to_index(room),
                 'Метро_int': int(metro_to_index(district)),
                 'Вид объекта_int': [int(type_to_index(type))]               
@@ -318,15 +344,17 @@ def update_graphs(district, distance, type, year, floor, area, center,room):
        X_test2 = poly.transform(X_test2)
        result=model.predict(X_test2)[-1]
        result=float(result)
+       data_res=str(round(result,3))+" \u00B1 "+str(round(rmse_test,3))
 
-#       X_test1 =  X_test1.iloc[:-1]
+       X_test1 =  X_test1.iloc[:-1]
 
 # Панель с результатом
 
        stats_panel = dbc.Card([
             dbc.CardHeader("Стоимость квартиры:", className="stats-header"),
             dbc.CardBody([
-                html.P(f"{result:.3f} (млн руб)")
+ #               html.P(f"{result:.3f} (млн руб)")
+                html.P(f"{data_res} (млн руб)")
             ])
       ])
 

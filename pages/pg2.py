@@ -7,7 +7,7 @@ import dash
 from dash import dcc, html, callback, Output, Input
 import dash_bootstrap_components as dbc
 
-dash.register_page(__name__, path='/page-2', name='Квартиры на карте') # '/' is home page
+dash.register_page(__name__, path='/page-2', name='Покупателям') # '/' is home page
 
 # cортировка словаря, составленного из 2-х списков, по значению
 def sort_lists(x1,y1,order):
@@ -31,7 +31,7 @@ layout=html.Div([
 
 # Заголовок
   dbc.Row([
-           html.H5("Квартиры на карте города СПб", className="header-2-title"),
+           html.H5("Квартиры на карте города", className="header-2-title"),
         ], className="header-2"
         ),
 
