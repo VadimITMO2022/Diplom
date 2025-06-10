@@ -53,7 +53,8 @@ layout=html.Div([
             dcc.Dropdown(id="district-filter",    
                       options=[{'label': sx, 'value': sx } for sx in df.sort_values(by='Метро', ascending=True)['Метро'].unique() if pd.notna(sx)],                           
                      # value=["Спортивная","Василеостровская","Приморская","Горный институт"], 
-                      value="Приморская", 
+                     #  value="Приморская", 
+                      value=" ", 
                       multi=True,    
                       className="filter-dropdown", 
                       )
