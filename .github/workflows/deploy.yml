@@ -23,8 +23,6 @@ jobs:
             git config --global --add safe.directory ${{ secrets.PROJECT_DIR }} &&
             cd ${{ secrets.PROJECT_DIR }} &&
             git pull origin main &&
-            source venv/bin/activate &&
-            pip install -r requirements.txt &&
             sudo systemctl daemon-reload &&
             sudo systemctl restart Diplom &&
             sudo systemctl restart nginx
