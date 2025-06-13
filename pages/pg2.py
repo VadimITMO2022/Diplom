@@ -19,7 +19,6 @@ def sort_lists(x1,y1,order):
        return x2,y2
 
 # Загрузка данных
-#df = pd.read_csv('data/output2.csv')
 df = pd.read_csv('data/data.csv')
 
 #создаем в датасете df колонку "Цена кв м" и помещаем в нее цену за 1 кв м квартиры (в тыс руб)
@@ -52,9 +51,7 @@ layout=html.Div([
 # Фильтр Выпадающее меню  "Выбрать станцию(-и) метро"                   
             dcc.Dropdown(id="district-filter",    
                       options=[{'label': sx, 'value': sx } for sx in df.sort_values(by='Метро', ascending=True)['Метро'].unique() if pd.notna(sx)],                           
-                     # value=["Спортивная","Василеостровская","Приморская","Горный институт"], 
-                      value=["Василеостровская"], 
-                     # value=" ", 
+                      value=["Спортивная","Василеостровская","Приморская","Горный институт"],                  
                       multi=True,    
                       className="filter-dropdown", 
                       )
@@ -251,7 +248,6 @@ def update_graphs(stations,number_rooms,district,price,area,distance_metro,col_d
 
           
        hovertemplate= (
-           #df1["Дата"].apply(lambda x: "Дата: " + str(x)  + "<br>") +
           df1["Адрес"].apply(lambda x: "Адрес: "+str(x)+ "<br>") +
           df1["Площадь"].apply(lambda x: "Площадь (кв м): " + str(x)  + "<br>") +
           df1["Количество комнат"].apply(lambda x: "Количество комнат: "+ str(x) + "<br>") +
@@ -286,7 +282,6 @@ def update_graphs(stations,number_rooms,district,price,area,distance_metro,col_d
            x = df1['Площадь'].tolist(),
 
           hovertemplate= (
-              #df1["Дата"].apply(lambda x: "Дата: " + str(x)  + "<br>") +
           df1["Адрес"].apply(lambda x: "Адрес: "+str(x)+ "<br>") +
           df1["Площадь"].apply(lambda x: "Площадь (кв м): " + str(x)  + "<br>") +
           df1["Количество комнат"].apply(lambda x: "Количество комнат: "+ str(x) + "<br>") +
@@ -328,7 +323,6 @@ def update_graphs(stations,number_rooms,district,price,area,distance_metro,col_d
            x = df1['До метро'].tolist(),
 
           hovertemplate= (
-              #df1["Дата"].apply(lambda x: "Дата: " + str(x)  + "<br>") +
           df1["Адрес"].apply(lambda x: "Адрес: "+str(x)+ "<br>") +
           df1["Площадь"].apply(lambda x: "Площадь (кв м): " + str(x)  + "<br>") +
           df1["Количество комнат"].apply(lambda x: "Количество комнат: "+ str(x) + "<br>") +
@@ -370,7 +364,6 @@ def update_graphs(stations,number_rooms,district,price,area,distance_metro,col_d
            x = df1['До центра'].tolist(),
 
           hovertemplate= (
-              #df1["Дата"].apply(lambda x: "Дата: " + str(x)  + "<br>") +
           df1["Адрес"].apply(lambda x: "Адрес: "+str(x)+ "<br>") +
           df1["Площадь"].apply(lambda x: "Площадь (кв м): " + str(x)  + "<br>") +
           df1["Количество комнат"].apply(lambda x: "Количество комнат: "+ str(x) + "<br>") +
